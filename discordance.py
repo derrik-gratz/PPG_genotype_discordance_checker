@@ -15,13 +15,19 @@ failures_master_list = []
 # Checks for consistency in tech called genotypes accross multiple tests
 
 def main():
-    print('This program checks .xlsx files, not .csv files. Make sure calls are made in the right file')
+    print('This program checks .xlsx files, not .csv files. \nFilename must include "_Map". Make sure calls are made in the right file')
+    print('\nColumns must be as follows: sample in B, disease in C, genotype in H')
     maplist = getmaplist()
-    sleep(3)
-    for maps in maplist:
-        gelmap = open_gel(maps)
-        print("\nChecking {}".format((maps.split("\\")[-1])))
-        sample_disease(gelmap)
+    sleep(4)
+    try:
+        for maps in maplist:
+            gelmap = open_gel(maps)
+            print("\nChecking {}".format((maps.split("\\")[-1])))
+            sample_disease(gelmap)
+    except PermissionError:
+        print('Close the maps and try again.')
+        sleep(4)
+        quit()
     print("\nAll failures:")
     for item in failures_master_list:
         print(item)
@@ -56,7 +62,7 @@ def getmaplist():
             path = os.getcwd()
             for file in os.listdir(path):
                 if '_Map.xlsx' in file:
-                    mapname = temp + "\\" + file
+                    mapname = path + "\\" + file
                     maps.append(file)
         except FileNotFoundError:
             print("Automatic gel map detection failed.")
